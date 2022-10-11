@@ -52,7 +52,7 @@ public class GitHandler {
             protected JSch createDefaultJSch(FS fs) throws JSchException {
                 JSch jSch = super.createDefaultJSch(fs);
                 jSch.addIdentity("/Users/jiangshaojie/.ssh/id_ed25519");
-                jSch.setKnownHosts("/Users/jiangshaojie/.ssh/known_hosts");
+//                jSch.setKnownHosts("/Users/jiangshaojie/.ssh/known_hosts");
                 return jSch;
             }
         };
