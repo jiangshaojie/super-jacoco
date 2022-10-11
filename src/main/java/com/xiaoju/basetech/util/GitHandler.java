@@ -6,9 +6,9 @@ package com.xiaoju.basetech.util;
  * @time: 2019/6/20 4:28 PM
  */
 
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+//import com.jcraft.jsch.JSch;
+//import com.jcraft.jsch.JSchException;
+//import com.jcraft.jsch.Session;
 import com.jcraft.jsch.*;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
@@ -19,6 +19,7 @@ import java.nio.file.Path;
 
 import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.errors.TransportException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.transport.*;
@@ -42,7 +43,7 @@ public class GitHandler {
     private String password;
 
     public Git cloneRepository(String gitUrl, String codePath, String commitId) throws GitAPIException {
-        final SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
+        /*final SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
             @Override
             protected void configure(OpenSshConfig.Host host, Session session) {
                 session.setConfig("StrictHostKeyChecking", "no");
@@ -55,13 +56,31 @@ public class GitHandler {
                 jSch.setKnownHosts("/Users/jiangshaojie/.ssh/known_hosts");
                 return jSch;
             }
-        };
+        };*/
 //        CloneCommand cloneCommand = Git.cloneRepository();
-        Git git = Git.cloneRepository().setURI(gitUrl).setTransportConfigCallback(new TransportConfigCallback() {
+       /* Git git = Git.cloneRepository().setURI(gitUrl).setTransportConfigCallback(new TransportConfigCallback() {
                     @Override
                     public void configure(Transport transport) {
                         SshTransport sshTransport = (SshTransport) transport;
                         sshTransport.setSshSessionFactory(sshSessionFactory);
+                    }
+                }).setDirectory(new File(codePath))
+                .setBranch(commitId)
+                .call();*/
+        SshSessionFactory customFactory = new SshSessionFactory() {
+            @Override
+            public RemoteSession getSession(URIish uri, CredentialsProvider credentialsProvider, FS fs, int tms) throws TransportException {
+                return null;
+            }
+
+            @Override
+            public String getType() {
+                return null;
+            }
+        }; // Get it from wherever
+        Git git = Git.cloneRepository().setURI(gitUrl).setTransportConfigCallback(transport -> {
+                    if (transport instanceof SshTransport) {
+                        ((SshTransport) transport).setSshSessionFactory(customFactory);
                     }
                 }).setDirectory(new File(codePath))
                 .setBranch(commitId)
