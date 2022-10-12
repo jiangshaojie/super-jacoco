@@ -46,7 +46,8 @@ public class CmdExecutor {
             }
 
             LOG.info("executeCmd : bash -c " + e.toString());
-            ProcessBuilder var12 = new ProcessBuilder(new String[]{"bash", "-c", e.toString()});
+//            ProcessBuilder var12 = new ProcessBuilder(new String[]{"bash", "-c", e.toString()});
+            ProcessBuilder var12 = new ProcessBuilder(new String[]{e.toString()});
             var12.redirectErrorStream(true);
             process = var12.start();
             CmdExecutor.ReadLine readLine = new CmdExecutor.ReadLine(process.getInputStream(), ret, true);
