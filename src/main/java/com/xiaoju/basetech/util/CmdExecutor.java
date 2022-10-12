@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,7 +49,14 @@ public class CmdExecutor {
 
             LOG.info("executeCmd : bash -c " + e.toString());
 //            ProcessBuilder var12 = new ProcessBuilder(new String[]{"bash", "-c", e.toString()});
-            ProcessBuilder var12 = new ProcessBuilder(new String[]{e.toString()});
+           /* List<String> command = new ArrayList<>();
+            command.add("bash");
+            command.add(e.toString());*/
+            ProcessBuilder var12 = new ProcessBuilder(new String[]{"bash", "-c", e.toString()});
+//            ProcessBuilder var12 = new ProcessBuilder(new String[]{"bash", "-c", e.toString()});
+//            ProcessBuilder var12 = new ProcessBuilder(new String[]{"bash", "-c", e.toString()});
+//            ProcessBuilder var12 = new ProcessBuilder();
+//            var12.command(command);
             var12.redirectErrorStream(true);
             process = var12.start();
             CmdExecutor.ReadLine readLine = new CmdExecutor.ReadLine(process.getInputStream(), ret, true);
