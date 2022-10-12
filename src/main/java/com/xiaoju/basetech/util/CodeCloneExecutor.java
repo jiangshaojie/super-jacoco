@@ -41,11 +41,10 @@ public class CodeCloneExecutor {
             if (new File(CODE_ROOT + uuid + "/").exists()) {
                 FileUtil.cleanDir(CODE_ROOT + uuid + "/");
             }
-            File path = new File(nowLocalPath);
+            /*File path = new File(nowLocalPath);
             if (!path.exists()) {
-//                path.mkdir();
                 path.mkdirs();
-            }
+            }*/
             String gitUrl = coverageReport.getGitUrl();
             log.info("uuid 下载路径{}", nowLocalPath);
             log.info("uuid {}开始下载代码...", uuid);

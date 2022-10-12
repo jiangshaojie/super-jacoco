@@ -342,7 +342,7 @@ public class CodeCovServiceImpl implements CodeCovService {
         }
 
         try {
-            int exitCode = CmdExecutor.executeCmd(new String[]{"cd " + coverageReport.getNowLocalPath() + "&&java -jar " +
+            int exitCode = CmdExecutor.executeCmd(new String[]{"cd " + coverageReport.getNowLocalPath() + " && java -jar " +
                     JACOCO_PATH + " dump --address " + deployInfoEntity.getAddress() + " --port " +
                     deployInfoEntity.getPort() + " --destfile ./jacoco.exec"}, CMD_TIMEOUT);
 

@@ -48,7 +48,7 @@ public class CodeCoverageScheduleJob {
      * <p>
      * 查询状态是Constants.JobStatus.INITIAL的任务
      */
-    @Scheduled(fixedDelay = 10_000L, initialDelay = 10_000L)
+//    @Scheduled(fixedDelay = 10_000L, initialDelay = 10_000L)
     public void codeCloneJob() {
         // 1. 查询需要diff的数据
         List<CoverageReportEntity> resList = coverageReportDao.queryCoverByStatus(Constants.JobStatus.INITIAL.val(),
@@ -91,7 +91,7 @@ public class CodeCoverageScheduleJob {
     /**
      * 每五分钟从项目机器上拉取exec执行文件，计算环境的增量方法覆盖率
      */
-    @Scheduled(fixedDelay = 300_000L, initialDelay = 300_000L)
+//    @Scheduled(fixedDelay = 300_000L, initialDelay = 300_000L)
     public void calculateEnvCov() {
         List<CoverageReportEntity> resList = coverageReportDao.queryCoverByStatus(Constants.JobStatus.SUCCESS.val(),
                 Constants.CoverageFrom.ENV.val(), 10);
