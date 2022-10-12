@@ -1,6 +1,7 @@
 package com.xiaoju.basetech.util;
 
 import com.xiaoju.basetech.entity.CoverageReportEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -16,10 +17,14 @@ import static com.xiaoju.basetech.util.Constants.LOG_PATH;
  */
 @Component
 public class CodeCompilerExecutor {
+    @Value(value = "${mvnpath}")
+    private String mvnPath;
 
     public void compileCode(CoverageReportEntity coverageReport) {
-        String logFile = coverageReport.getLogFile().replace(LocalIpUtils.getTomcatBaseUrl()+"logs/", LOG_PATH);
-        String[] compileCmd = new String[]{"cd " + coverageReport.getNowLocalPath() + "&&mvn clean compile " +
+        String logFile = coverageReport.getLogFile().replace(LocalIpUtils.getTomcatBaseUrl() + "logs/", LOG_PATH);
+        /*String[] compileCmd = new String[]{"cd " + coverageReport.getNowLocalPath() + "&&mvn clean compile " +
+                (StringUtils.isEmpty(coverageReport.getEnvType()) ? "" : "-P=" + coverageReport.getEnvType()) + ">>" + logFile};*/
+        String[] compileCmd = new String[]{"cd " + coverageReport.getNowLocalPath() + " && " + mvnPath + " clean compile " +
                 (StringUtils.isEmpty(coverageReport.getEnvType()) ? "" : "-P=" + coverageReport.getEnvType()) + ">>" + logFile};
         try {
             int exitCode = CmdExecutor.executeCmd(compileCmd, 600000L);

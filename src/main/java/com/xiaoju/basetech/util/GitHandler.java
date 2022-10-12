@@ -42,7 +42,7 @@ public class GitHandler {
                 .setBranch(commitId)
                 .call();
         // 切换到指定commitId
-//        checkoutBranch(git, commitId);
+        checkoutBranch(git, commitId);
         return git;
     }
 
