@@ -32,7 +32,7 @@ public class CodeCloneExecutor {
             coverageReport.setLineCoverage((double) 100);
             return;
         }
-        String logFile = LocalIpUtils.getTomcatBaseUrl()+"logs/" + coverageReport.getUuid() + ".log";
+        String logFile = LocalIpUtils.getTomcatBaseUrl() + "logs/" + coverageReport.getUuid() + ".log";
         coverageReport.setLogFile(logFile);
         try {
             String uuid = coverageReport.getUuid();
@@ -42,6 +42,7 @@ public class CodeCloneExecutor {
                 FileUtil.cleanDir(CODE_ROOT + uuid + "/");
             }
             String gitUrl = coverageReport.getGitUrl();
+            log.info("uuid 下载路径{}", nowLocalPath);
             log.info("uuid {}开始下载代码...", uuid);
             gitHandler.cloneRepository(gitUrl, nowLocalPath, coverageReport.getNowVersion());
             if (coverageReport.getType() == Constants.ReportType.DIFF.val()) {

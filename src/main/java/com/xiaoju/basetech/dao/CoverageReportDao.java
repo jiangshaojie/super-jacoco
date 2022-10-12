@@ -3,6 +3,7 @@ package com.xiaoju.basetech.dao;
 import com.xiaoju.basetech.entity.CoverageReportEntity;
 import com.xiaoju.basetech.entity.DeployInfoEntity;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * @author didi
  */
+@Repository
 public interface CoverageReportDao {
 
     int insertCoverageReportById(@Param("coverageReportEntity") CoverageReportEntity coverageReportEntity);

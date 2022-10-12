@@ -2,7 +2,9 @@ package com.xiaoju.basetech.dao;
 
 import com.xiaoju.basetech.entity.DeployInfoEntity;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface DeployInfoDao {
 
     /**
