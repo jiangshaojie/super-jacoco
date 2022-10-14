@@ -33,16 +33,16 @@ public class UnitTester {
             unittestCmd = unittestCmd + " -P=" + coverageReport.getEnvType();
         }
         String logFile = coverageReport.getLogFile().replace(LocalIpUtils.getTomcatBaseUrl() + "logs/", LOG_PATH);
-        /*String[] cmd = new String[]{unittestCmd + " -Dmaven.test.skip=false org.jacoco:jacoco-maven-plugin:1.0.2-SNAPSHOT:prepare-agent "
+        String[] cmd = new String[]{unittestCmd + " -Dmaven.test.skip=false org.jacoco:jacoco-maven-plugin:1.0.2-SNAPSHOT:prepare-agent "
                 + "compile test-compile org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test "
                 + "org.apache.maven.plugins:maven-jar-plugin:2.4:jar org.jacoco:jacoco-maven-plugin:1.0.2-SNAPSHOT:report -Dmaven.test.failure.ignore=true -Dfile.encoding=UTF-8 "
                 + (StringUtils.isEmpty(coverageReport.getDiffMethod()) ? "" : ("-Djacoco.diffFile=" + coverageReport.getDiffMethod()))
-                + ">" + logFile};*/
-        String[] cmd = new String[]{unittestCmd + " -Dmaven.test.skip=false org.jacoco:jacoco-maven-plugin:0.8.9-SNAPSHOT:prepare-agent "
+                + ">" + logFile};
+        /*String[] cmd = new String[]{unittestCmd + " -Dmaven.test.skip=false org.jacoco:jacoco-maven-plugin:0.8.9-SNAPSHOT:prepare-agent "
                 + "compile test-compile org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test "
                 + "org.apache.maven.plugins:maven-jar-plugin:2.4:jar org.jacoco:jacoco-maven-plugin:0.8.9-SNAPSHOT:report -Dmaven.test.failure.ignore=true -Dfile.encoding=UTF-8 "
                 + (StringUtils.isEmpty(coverageReport.getDiffMethod()) ? "" : ("-Djacoco.diffFile=" + coverageReport.getDiffMethod()))
-                + ">" + logFile};
+                + ">" + logFile};*/
         // 超时时间设置为一小时,
         int exitCode;
         try {
