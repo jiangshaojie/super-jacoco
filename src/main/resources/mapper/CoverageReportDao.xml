@@ -42,9 +42,9 @@
         asc
         limit #{num}
     </select>
-    <update id="setCoverStatus" parameterType="com.xiaoju.basetech.entity.coverageReportEntity">
-        update diff_coverage_report SET request_status=#{coverageReportEntity.status}
-        where job_record_uuid=#{coverageReportEntity.uuid}
+    <update id="setCoverStatus" parameterType="com.xiaoju.basetech.entity.EnvCovStatusRequest">
+        update diff_coverage_report SET request_status=#{envCovStatusRequest.status}
+        where job_record_uuid=#{envCovStatusRequest.uuid}
     </update>
 
     <insert id="insertCoverageReportById" parameterType="com.xiaoju.basetech.entity.CoverageReportEntity">

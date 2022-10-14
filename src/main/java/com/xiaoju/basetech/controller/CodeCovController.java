@@ -46,7 +46,6 @@ public class CodeCovController {
     }
 
     /**
-     *
      * @param envCoverRequest
      * @return
      */
@@ -58,14 +57,14 @@ public class CodeCovController {
 
     }
 
-    @RequestMapping(value = "/triggerEnvCov", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/set-cov-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public HttpResult<Object> setEnvCovStatus(@RequestBody @Validated EnvCovStatusRequest envCoverStatusRequest) {
-        int re=codeCovService.setEnvCov(envCoverStatusRequest);
+        int re = codeCovService.setEnvCov(envCoverStatusRequest);
         if (re > 0) {
             return HttpResult.success("成功");
         }
-        return HttpResult.build(false,"失败");
+        return HttpResult.build(false, "失败");
 
     }
 

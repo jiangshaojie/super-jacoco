@@ -22,6 +22,7 @@ CREATE TABLE `diff_coverage_report`
   `now_local_path` varchar(500) NOT NULL DEFAULT '',
   `base_local_path` varchar(500) NOT NULL DEFAULT '',
   `log_file` varchar(255) NOT NULL DEFAULT '',
+  `round_id` int(10) COMMENT '轮次id',
   PRIMARY KEY (`job_record_uuid`),
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='增量代码覆盖率';
@@ -41,21 +42,25 @@ CREATE TABLE `diff_deploy_info`
 
 CREATE TABLE `project_info`
 (
-    `id`              int(10) NOT NULL AUTO_INCREMENT primary key,
-    `name` varchar(80)   NOT NULL COMMENT '项目名',
+    `id`          int(10) NOT NULL AUTO_INCREMENT primary key,
+    `name`        varchar(80) NOT NULL COMMENT '项目名',
+    `create_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='项目名称';
 
 CREATE TABLE `project_version_info`
 (
-    `id`              int(10) NOT NULL AUTO_INCREMENT primary key,
-    `project_id` varchar(80)   NOT NULL COMMENT '项目Id',
-    `version`         int(10) NOT NULL COMMENT '版本'
+    `id`          int(10) NOT NULL AUTO_INCREMENT primary key,
+    `project_id`  varchar(80) NOT NULL COMMENT '项目Id',
+    `version`     int(10) NOT NULL COMMENT '版本',
+    `create_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='项目版本';
 
 
 CREATE TABLE `project_version_rounds_info`
 (
-    `id`              int(10) NOT NULL AUTO_INCREMENT primary key,
-    `version_id`      int(10) NOT NULL COMMENT '版本Id',
-    `round_id` int(10) NOT NULL COMMENT '轮次Id'
+    `id`          int(10) NOT NULL AUTO_INCREMENT primary key,
+    `version_id`  int(10) NOT NULL COMMENT '版本Id',
+    `round_id`    int(10) NOT NULL COMMENT '轮次Id',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='项目版本测试轮次';
