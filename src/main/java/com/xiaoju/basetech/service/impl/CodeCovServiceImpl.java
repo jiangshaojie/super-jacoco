@@ -38,7 +38,7 @@ import static com.xiaoju.basetech.util.Constants.*;
 @Service
 public class CodeCovServiceImpl implements CodeCovService {
     private static final String JACOCO_PATH = System.getProperty("user.home") + "/org.jacoco.cli-1.0.2-SNAPSHOT-nodeps.jar";
-//    private static final String JACOCO_PATH = System.getProperty("user.home") + "/org.jacoco.cli-0.8.9-SNAPSHOT-nodeps.jar";
+    //    private static final String JACOCO_PATH = System.getProperty("user.home") + "/org.jacoco.cli-0.8.9-SNAPSHOT-nodeps.jar";
     private static final String COV_PATH = System.getProperty("user.home") + "/cover/";
     //普通命令超时时间是10分钟,600000L 143
     private static final Long CMD_TIMEOUT = 600000L;
@@ -486,6 +486,12 @@ public class CodeCovServiceImpl implements CodeCovService {
         return coverResult;
     }
 
+    @Override
+    public int setEnvCov(EnvCovStatusRequest envCoverStatusRequest) {
+        int re = coverageReportDao.setCoverStatus(envCoverStatusRequest);
+        return re;
+    }
+
     /**
      * 拉取jacoco文件并转换为报告
      */
@@ -630,5 +636,14 @@ public class CodeCovServiceImpl implements CodeCovService {
         } catch (Exception e) {
             log.error("ExecFiles 保存失败 errorMessege is {}", e.fillInStackTrace());
         }
+    }
+
+    public static void main(String[] args) {
+        CodeCovServiceImpl codeCovService = new CodeCovServiceImpl();
+        List<String> execFiles = new ArrayList<>();
+        execFiles.add("/Users/jiangshaojie/app/super_jacoco/clonecode/envcov_22/77e4cc9b93051fc9e4b876b2d237caba64bdf8a3/jacoco.exec");
+        execFiles.add("/Users/jiangshaojie/app/super_jacoco/clonecode/envcov_19/d5e5d9cf910f50d431c7509046456e1d9744d532/jacoco.exec");
+        String destFile = "/Users/jiangshaojie/app/super_jacoco/clonecode/envcov_22/77e4cc9b93051fc9e4b876b2d237caba64bdf8a3/jacoco_new.exec";
+        codeCovService.mergeExec(execFiles, destFile);
     }
 }

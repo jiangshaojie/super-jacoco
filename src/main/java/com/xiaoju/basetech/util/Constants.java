@@ -59,6 +59,7 @@ public class Constants {
         REMOVE_FILE_FAIL(211, "删除源文件失败"),
 
         ENVREPORT_FAIL(212, "统计功能测试增量覆盖率失败"),
+        TASK_DONE(300,"本次测试完成，代码覆盖率任务停止统计"),
         WAITING_PULL_EXEC(12,"等待统计功能测试增量覆盖率中");
 
 

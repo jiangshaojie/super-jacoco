@@ -2,6 +2,7 @@ package com.xiaoju.basetech.dao;
 
 import com.xiaoju.basetech.entity.CoverageReportEntity;
 import com.xiaoju.basetech.entity.DeployInfoEntity;
+import com.xiaoju.basetech.entity.EnvCovStatusRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -35,6 +36,7 @@ public interface CoverageReportDao {
 
     int casUpdateByStatus(@Param("expectStatus") int expectStatus, @Param("newStatus") int newStatus, @Param("uuid") String uuid);
 
+    int setCoverStatus(@Param("envCovStatusRequest") EnvCovStatusRequest envCovStatusRequest);
     /**
      * 重置上次更新时间在expireTime之前的未执行完的任务，设置任务状态为待执行
      *

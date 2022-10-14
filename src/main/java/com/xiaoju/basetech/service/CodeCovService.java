@@ -66,4 +66,5 @@ public interface CodeCovService {
      */
     CoverResult getLocalCoverResult(LocalHostRequestParam localHostRequestParam);
 
+    int setEnvCov(EnvCovStatusRequest envCoverStatusRequest);
 }
