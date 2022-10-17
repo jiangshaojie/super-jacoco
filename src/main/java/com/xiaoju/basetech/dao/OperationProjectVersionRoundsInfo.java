@@ -12,13 +12,13 @@ import java.util.List;
 
 @Repository
 public interface OperationProjectVersionRoundsInfo {
-    @Insert("insert into project_version_rounds_info (version_id ,round,create_time) values (#{version},#{round},#{date})")
-    int insertProjectVersionRound(int version, int round, Date date);
+    @Insert("insert into project_version_rounds_info (version_id ,round_id,create_time) values (#{versionId},#{roundId},#{date})")
+    int insertProjectVersionRound(int versionId, int roundId, Date date);
 
     @Select("select * from project_version_rounds_info")
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(column = "version_id", property = "versionId"),
-            @Result(column = "round", property = "round"),
+            @Result(column = "round_id", property = "roundId"),
             @Result(column = "create_time", property = "createTime")})
     List<ProjectVersionRoundsInfo> queryProjectVersionRounds();
 }

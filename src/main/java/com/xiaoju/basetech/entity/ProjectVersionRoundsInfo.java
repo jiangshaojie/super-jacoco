@@ -8,6 +8,6 @@ import java.util.Date;
 public class ProjectVersionRoundsInfo {
     private int id;
     private int versionId;
-    private int round;
+    private int roundId;
     private Date createTime;
 }

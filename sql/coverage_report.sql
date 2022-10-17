@@ -50,8 +50,8 @@ CREATE TABLE `project_info`
 CREATE TABLE `project_version_info`
 (
     `id`          int(10) NOT NULL AUTO_INCREMENT primary key,
-    `project_id`  varchar(80) NOT NULL COMMENT '项目Id',
-    `version`     int(10) NOT NULL COMMENT '版本',
+    `project_id`  int(10) NOT NULL COMMENT '项目Id',
+    `version`     varchar(10) NOT NULL COMMENT '版本',
     `create_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='项目版本';
 
@@ -62,5 +62,5 @@ CREATE TABLE `project_version_rounds_info`
     `version_id`  int(10) NOT NULL COMMENT '版本Id',
     `round_id`    int(10) NOT NULL COMMENT '轮次Id',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-
+    CONSTRAINT project_version_rounds_info_UN UNIQUE KEY (version_id,round_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='项目版本测试轮次';

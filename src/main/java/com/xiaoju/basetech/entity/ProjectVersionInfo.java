@@ -8,6 +8,6 @@ import java.util.Date;
 public class ProjectVersionInfo {
     private int id;
     private int projectId;
-    private int version;
+    private String version;
     private Date createTime;
 }

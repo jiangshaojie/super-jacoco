@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface OperationProjectVersion {
     @Insert("insert into project_version_info (project_id,version,create_time) values (#{projectId},#{version},#{date})")
-    int insertProjectVersion(int projectId, int version, Date date);
+    int insertProjectVersion(int projectId, String version, Date date);
 
     @Select("select * from project_version_info")
     @Results({@Result(id = true, column = "id", property = "id"),
@@ -19,5 +19,12 @@ public interface OperationProjectVersion {
             @Result(column = "version", property = "version"),
             @Result(column = "create_time", property = "createTime")})
     List<ProjectVersionInfo> queryProjectVersion();
+
+    @Select("select * from project_version_info where project_id=#{projectId} and version=#{version}")
+    @Results({@Result(id = true, column = "id", property = "id"),
+            @Result(column = "project_id", property = "projectId"),
+            @Result(column = "version", property = "version"),
+            @Result(column = "create_time", property = "createTime")})
+    List<ProjectVersionInfo> queryProjectVersionByProjectIdAndVersion(int projectId, String version);
 
 }
