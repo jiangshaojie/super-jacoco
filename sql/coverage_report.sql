@@ -17,7 +17,7 @@ CREATE TABLE `diff_coverage_report`
   `err_msg` varchar(1000) NOT NULL DEFAULT '' COMMENT '错误信息',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  `sub_module` varchar(255) NOT NULL DEFAULT '' COMMENT '子项目目录名称',
+  `sub_module` varchar(10000) NOT NULL DEFAULT '' COMMENT '子项目目录名称',
   `from` int(10) NOT NULL DEFAULT '0' COMMENT '1=单元测试，2=环境部署1=单元测试，2=hu',
   `now_local_path` varchar(500) NOT NULL DEFAULT '',
   `base_local_path` varchar(500) NOT NULL DEFAULT '',
@@ -34,7 +34,7 @@ CREATE TABLE `diff_deploy_info`
     `address`         varchar(15)   NOT NULL COMMENT 'HOST',
     `port`            int(10) NOT NULL COMMENT '端口',
     `code_path`       varchar(1000) NOT NULL DEFAULT '' COMMENT 'nowVersion代码目录',
-    `child_modules`   varchar(1000) NOT NULL DEFAULT '' COMMENT '项目子模块名称',
+    `child_modules`   varchar(10000) NOT NULL DEFAULT '' COMMENT '项目子模块名称',
     PRIMARY KEY (`job_record_uuid`),
     KEY               `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='服务部署地址';
