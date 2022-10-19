@@ -40,13 +40,14 @@ public class ManageDataServiceImpl implements ManageDataService {
 
     @Override
     public HttpResult<Object> insertProjectVersion(ProjectVersionInfo projectVersionInfo) {
-        if (operationProjectVersion.queryProjectVersionByProjectIdAndVersion(projectVersionInfo.getProjectId(), projectVersionInfo.getVersion()).size() > 0) {
-            return HttpResult.build(false, "版本号已存在");
+        ProjectVersionInfo projectVersionInfo1 = operationProjectVersion.queryProjectVersionByProjectIdAndVersion(projectVersionInfo.getProjectId(), projectVersionInfo.getVersion());
+        if (projectVersionInfo1 != null) {
+            return HttpResult.build(false, "版本号已存在", projectVersionInfo1);
         }
         int re = operationProjectVersion.insertProjectVersion(projectVersionInfo.getProjectId(),
                 projectVersionInfo.getVersion(), new Timestamp(System.currentTimeMillis()));
         if (re > 0) {
-            return HttpResult.success();
+            return HttpResult.success(operationProjectVersion.queryProjectVersionByProjectIdAndVersion(projectVersionInfo.getProjectId(), projectVersionInfo.getVersion()));
         }
         return HttpResult.build(false, "失败");
     }

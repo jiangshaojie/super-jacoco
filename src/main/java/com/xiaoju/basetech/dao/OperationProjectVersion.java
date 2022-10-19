@@ -25,6 +25,6 @@ public interface OperationProjectVersion {
             @Result(column = "project_id", property = "projectId"),
             @Result(column = "version", property = "version"),
             @Result(column = "create_time", property = "createTime")})
-    List<ProjectVersionInfo> queryProjectVersionByProjectIdAndVersion(int projectId, String version);
+    ProjectVersionInfo queryProjectVersionByProjectIdAndVersion(int projectId, String version);
 
 }
