@@ -3,10 +3,7 @@ package com.xiaoju.basetech.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.xiaoju.basetech.entity.HttpResult;
-import com.xiaoju.basetech.entity.ProjectInfo;
-import com.xiaoju.basetech.entity.ProjectVersionInfo;
-import com.xiaoju.basetech.entity.ProjectVersionRoundsInfo;
+import com.xiaoju.basetech.entity.*;
 import com.xiaoju.basetech.service.ManageDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +34,7 @@ public class ManageDataController {
         ProjectVersionInfo projectVersionInfo = new Gson().fromJson(param, ProjectVersionInfo.class);
         log.info("insertProject req: {}", param);
         HttpResult httpResult = manageDataService.insertProjectVersion(projectVersionInfo);
-        log.info("insertProject result: {}", httpResult.toString());
+        log.info("insertProject result: {}", new Gson().toJson(httpResult));
         return httpResult;
 
     }
@@ -48,7 +45,7 @@ public class ManageDataController {
         ProjectVersionRoundsInfo projectVersionRoundsInfo = new Gson().fromJson(param, ProjectVersionRoundsInfo.class);
         log.info("insertProject req: {}", param);
         HttpResult httpResult = manageDataService.insertProjectVersionRound(projectVersionRoundsInfo);
-        log.info("insertProject result: {}", httpResult.toString());
+        log.info("insertProject result: {}", new Gson().toJson(httpResult));
         return httpResult;
 
     }
@@ -57,5 +54,12 @@ public class ManageDataController {
     @ResponseBody
     public HttpResult<Object> setTestPlanState(@RequestBody String param) {
         return null;
+    }
+
+    @RequestMapping(value = "/create-task")
+    @ResponseBody
+    public HttpResult<Object> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+        HttpResult httpResult = manageDataService.createTask(createTaskRequest);
+        return httpResult;
     }
 }

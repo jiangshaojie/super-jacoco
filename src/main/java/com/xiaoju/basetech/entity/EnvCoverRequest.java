@@ -8,9 +8,10 @@ import lombok.Data;
  * @time: 2020/4/26 7:52 PM
  */
 @Data
-public class EnvCoverRequest extends CoverBaseRequest{
+public class EnvCoverRequest extends CoverBaseRequest {
 
     private String address;
     private int port;
-
+    private int round;
+    private int roundId;
 }

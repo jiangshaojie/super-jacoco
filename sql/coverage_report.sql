@@ -60,7 +60,7 @@ CREATE TABLE `project_version_rounds_info`
 (
     `id`          int(10) NOT NULL AUTO_INCREMENT primary key,
     `version_id`  int(10) NOT NULL COMMENT '版本Id',
-    `round_id`    int(10) NOT NULL COMMENT '轮次Id',
+    `round`    int(10) NOT NULL COMMENT '轮次Id',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     CONSTRAINT project_version_rounds_info_UN UNIQUE KEY (version_id,round_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='项目版本测试轮次';

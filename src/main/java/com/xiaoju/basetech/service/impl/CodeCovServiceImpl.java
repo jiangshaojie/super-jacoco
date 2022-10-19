@@ -284,6 +284,7 @@ public class CodeCovServiceImpl implements CodeCovService {
             coverageReport.setGitUrl(envCoverRequest.getGitUrl());
             coverageReport.setNowVersion(envCoverRequest.getNowVersion());
             coverageReport.setType(envCoverRequest.getType());
+            coverageReport.setRoundId(envCoverRequest.getRoundId());
 
             if (!StringUtils.isEmpty(envCoverRequest.getBaseVersion())) {
                 coverageReport.setBaseVersion(envCoverRequest.getBaseVersion());

@@ -58,7 +58,8 @@
                                          `now_version`,
                                          `now_local_path`,
                                          `base_local_path`,
-                                         `from`)
+                                         `from`,
+                                         `round_id`)
         VALUES (#{coverageReportEntity.uuid},
                 #{coverageReportEntity.requestStatus},
                 #{coverageReportEntity.type},
@@ -69,7 +70,8 @@
                 #{coverageReportEntity.nowVersion},
                 #{coverageReportEntity.nowLocalPath},
                 #{coverageReportEntity.baseLocalPath},
-                #{coverageReportEntity.from})
+                #{coverageReportEntity.from},
+                #{coverageReportEntity.roundId})
     </insert>
 
 
