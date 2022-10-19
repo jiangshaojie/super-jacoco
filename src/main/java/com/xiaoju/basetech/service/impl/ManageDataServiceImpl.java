@@ -27,12 +27,13 @@ public class ManageDataServiceImpl implements ManageDataService {
 
     @Override
     public HttpResult<Object> insertProject(ProjectInfo projectInfo) {
-        if (operationProject.queryProjectByName(projectInfo.getName()).size() > 0) {
-            return HttpResult.build(false, "项目名重复，新增项目失败");
+        ProjectInfo projectInfo1 = operationProject.queryProjectByName(projectInfo.getName());
+        if (projectInfo1 != null) {
+            return HttpResult.build(false, "项目名重复，新增项目失败", projectInfo1);
         }
         int re = operationProject.insertProject(projectInfo.getName(), new Timestamp(System.currentTimeMillis()));
         if (re > 0) {
-            return HttpResult.success();
+            return HttpResult.success(operationProject.queryProjectByName(projectInfo.getName()));
         }
         return HttpResult.build(false, "失败");
     }

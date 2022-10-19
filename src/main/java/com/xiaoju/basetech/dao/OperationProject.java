@@ -25,7 +25,7 @@ public interface OperationProject {
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(column = "name", property = "name"),
             @Result(column = "create_time", property = "createTime")})
-    List<ProjectInfo> queryProjectByName(String name);
+    ProjectInfo queryProjectByName(String name);
 
 }
 

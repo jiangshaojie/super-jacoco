@@ -26,7 +26,7 @@ public class ManageDataController {
         ProjectInfo projectInfo = new Gson().fromJson(param, ProjectInfo.class);
         log.info("insertProject req: {}", param);
         HttpResult httpResult = manageDataService.insertProject(projectInfo);
-        log.info("insertProject result: {}", httpResult.toString());
+        log.info("insertProject result: {}", new Gson().toJson(httpResult));
         return httpResult;
 
     }
