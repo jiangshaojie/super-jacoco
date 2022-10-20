@@ -23,7 +23,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.xiaoju.basetech.util.Constants.*;
@@ -458,6 +460,7 @@ public class CodeCovServiceImpl implements CodeCovService {
             log.error("uuid={}获取jacoco.exec 文件发生未知错误", coverageReport.getUuid(), e);
             log.error("uuid={}", coverageReport.getUuid(), coverageReport.getErrMsg());
         } finally {
+            coverageReport.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             coverageReportDao.updateCoverageReportByReport(coverageReport);
         }
     }

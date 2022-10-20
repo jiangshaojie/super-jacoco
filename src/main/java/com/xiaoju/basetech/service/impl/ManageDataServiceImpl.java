@@ -6,6 +6,7 @@ import com.xiaoju.basetech.dao.OperationProject;
 import com.xiaoju.basetech.dao.OperationProjectVersion;
 import com.xiaoju.basetech.dao.OperationProjectVersionRoundsInfo;
 import com.xiaoju.basetech.entity.*;
+import com.xiaoju.basetech.job.CodeCoverageScheduleJob;
 import com.xiaoju.basetech.service.CodeCovService;
 import com.xiaoju.basetech.service.ManageDataService;
 import com.xiaoju.basetech.util.Constants;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,6 +32,8 @@ public class ManageDataServiceImpl implements ManageDataService {
     CodeCovService codeCovService;
     @Autowired
     OperationCoverageReportDao operationCoverageReportDao;
+    @Autowired
+    CodeCoverageScheduleJob codeCoverageScheduleJob;
 
     @Override
     public HttpResult<Object> insertProject(ProjectInfo projectInfo) {
@@ -108,10 +113,14 @@ public class ManageDataServiceImpl implements ManageDataService {
                 .queryByProjectIdAndVersion(projectInfo.getId(), testPlanRequest.getVersion());
         ProjectVersionRoundsInfo projectVersionRoundsInfo = operationProjectVersionRoundsInfo
                 .queryByVersionIdAndRoundId(projectVersionInfo.getId(), testPlanRequest.getRound());
+        CoverageReportEntity coverageReportEntity = operationCoverageReportDao.queryByRoundId(projectVersionRoundsInfo.getId());
+        List<CoverageReportEntity> coverageReportEntityList = new ArrayList<>();
+        coverageReportEntityList.add(coverageReportEntity);
+        codeCoverageScheduleJob.manualCalculateEnvCov(coverageReportEntityList);
         int re = operationCoverageReportDao.updateByRoundId(projectVersionRoundsInfo.getId(), Constants.JobStatus.TASK_DONE.val());
         if (re > 0) {
             return HttpResult.success("任务状态更新成功");
         }
-        return HttpResult.build(false,"任务状态更新失败");
+        return HttpResult.build(false, "任务状态更新失败");
     }
 }

@@ -115,7 +115,7 @@
             `diffmethod`=#{coverageReportEntity.diffMethod},
             `log_file`=#{coverageReportEntity.logFile},
             `now_local_path`=#{coverageReportEntity.nowLocalPath},
-            `update_time`=NOW()
+            `update_time`=#{coverageReportEntity.updateTime}
         WHERE job_record_uuid = #{coverageReportEntity.uuid}
     </update>
     <update id="casUpdateStatusById">

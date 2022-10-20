@@ -91,11 +91,15 @@ public class CodeCoverageScheduleJob {
     /**
      * 每五分钟从项目机器上拉取exec执行文件，计算环境的增量方法覆盖率
      */
-//    @Scheduled(fixedDelay = 300_000L, initialDelay = 300_000L)
+    @Scheduled(fixedDelay = 300_000L, initialDelay = 300_000L)
     public void calculateEnvCov() {
         List<CoverageReportEntity> resList = coverageReportDao.queryCoverByStatus(Constants.JobStatus.SUCCESS.val(),
                 Constants.CoverageFrom.ENV.val(), 10);
+        manualCalculateEnvCov(resList);
         log.info("查询需要拉取exec文件的数据{}条", resList.size());
+    }
+
+    public void manualCalculateEnvCov(List<CoverageReportEntity> resList) {
         resList.forEach(o -> {
             try {
                 int num = coverageReportDao.casUpdateByStatus(Constants.JobStatus.SUCCESS.val(),
