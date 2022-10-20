@@ -9,14 +9,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OperationCoverageReportDao {
-    @Select("select * from diff_coverage_report where round_id=#{roundId} and 0<request_status<200")
+    @Select("select * from diff_coverage_report where round_id=#{roundId} and (0<request_status<200 or request_status=300)")
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(column = "job_record_uuid", property = "uuid"),
-            @Result(column = "gitUrl", property = "gitUrl"),
+            @Result(column = "giturl", property = "gitUrl"),
             @Result(column = "base_version", property = "baseVersion"),
             @Result(column = "now_version", property = "nowVersion"),
             @Result(column = "type", property = "type"),
-            @Result(column = "requestStatus", property = "requestStatus"),
+            @Result(column = "request_status", property = "requestStatus"),
             @Result(column = "diffmethod", property = "diffMethod"),
             @Result(column = "err_msg", property = "errMsg"),
             @Result(column = "report_url", property = "reportUrl"),
@@ -36,6 +36,6 @@ public interface OperationCoverageReportDao {
     )
     CoverageReportEntity queryByRoundId(int roundId);
 
-    @Update("update diff_coverage_report set request_status=#{status} where round_id==#{roundId} and 0<request_status<200")
-    int updateByRoundId(int id, int status);
+    @Update("update diff_coverage_report set request_status=#{status} where round_id=#{roundId} and 0<request_status<200")
+    int updateByRoundId(int roundId, int status);
 }

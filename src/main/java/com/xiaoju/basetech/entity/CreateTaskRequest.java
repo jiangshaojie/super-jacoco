@@ -10,6 +10,7 @@ public class CreateTaskRequest extends EnvCoverRequest {
     private String project;
     @NotBlank(message = "version不能为空")
     private String version;
+    private Boolean flag = false;
 //    @NotBlank(message = "round不能为空")
 //    private int roundId;
 }

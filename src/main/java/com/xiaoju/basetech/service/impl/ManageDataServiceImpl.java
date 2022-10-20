@@ -97,7 +97,10 @@ public class ManageDataServiceImpl implements ManageDataService {
             return HttpResult.build(false, "任务创建失败检查项目版本测试轮次");
         }
         CoverageReportEntity coverageReportEntity = operationCoverageReportDao.queryByRoundId(projectVersionRoundsInfo.getId());
-        if (coverageReportEntity != null) {
+        if (coverageReportEntity.getRequestStatus() == 300 && createTaskRequest.getFlag() == false) {
+            return HttpResult.build(false, "任务创建失败，任务已完成", coverageReportEntity);
+        }
+        if (coverageReportEntity != null & coverageReportEntity.getRequestStatus() != 300) {
             return HttpResult.build(false, "任务创建失败，任务已存在", coverageReportEntity);
         }
         createTaskRequest.setRoundId(projectVersionRoundsInfo.getId());
