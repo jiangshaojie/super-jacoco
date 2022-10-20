@@ -1,18 +1,19 @@
 package com.xiaoju.basetech.service.impl;
 
 import com.google.gson.Gson;
+import com.xiaoju.basetech.dao.OperationCoverageReportDao;
 import com.xiaoju.basetech.dao.OperationProject;
 import com.xiaoju.basetech.dao.OperationProjectVersion;
 import com.xiaoju.basetech.dao.OperationProjectVersionRoundsInfo;
 import com.xiaoju.basetech.entity.*;
 import com.xiaoju.basetech.service.CodeCovService;
 import com.xiaoju.basetech.service.ManageDataService;
+import com.xiaoju.basetech.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -26,6 +27,8 @@ public class ManageDataServiceImpl implements ManageDataService {
     OperationProjectVersionRoundsInfo operationProjectVersionRoundsInfo;
     @Autowired
     CodeCovService codeCovService;
+    @Autowired
+    OperationCoverageReportDao operationCoverageReportDao;
 
     @Override
     public HttpResult<Object> insertProject(ProjectInfo projectInfo) {
@@ -43,7 +46,7 @@ public class ManageDataServiceImpl implements ManageDataService {
     @Override
     public HttpResult<Object> insertProjectVersion(ProjectVersionInfo projectVersionInfo) {
         ProjectVersionInfo projectVersionInfo1 = operationProjectVersion
-                .queryProjectVersionByProjectIdAndVersion(projectVersionInfo.getProjectId(), projectVersionInfo.getVersion());
+                .queryByProjectIdAndVersion(projectVersionInfo.getProjectId(), projectVersionInfo.getVersion());
         if (projectVersionInfo1 != null) {
             return HttpResult.build(false, "版本号已存在", projectVersionInfo1);
         }
@@ -51,7 +54,7 @@ public class ManageDataServiceImpl implements ManageDataService {
                 projectVersionInfo.getVersion(), new Timestamp(System.currentTimeMillis()));
         if (re > 0) {
             return HttpResult.success(operationProjectVersion
-                    .queryProjectVersionByProjectIdAndVersion(projectVersionInfo.getProjectId(), projectVersionInfo.getVersion()));
+                    .queryByProjectIdAndVersion(projectVersionInfo.getProjectId(), projectVersionInfo.getVersion()));
         }
         return HttpResult.build(false, "失败");
     }
@@ -64,7 +67,7 @@ public class ManageDataServiceImpl implements ManageDataService {
                             , projectVersionRoundsInfo.getRound(), new Timestamp(System.currentTimeMillis()));
             if (re > 0) {
                 return HttpResult.success(operationProjectVersionRoundsInfo
-                        .queryProjectVersionRoundsByVersionIdAndRoundId(projectVersionRoundsInfo.getVersionId(),
+                        .queryByVersionIdAndRoundId(projectVersionRoundsInfo.getVersionId(),
                                 projectVersionRoundsInfo.getRound()));
             }
         } catch (Exception e) {
@@ -72,7 +75,7 @@ public class ManageDataServiceImpl implements ManageDataService {
             log.info("{} 添加 {}失败", projectVersionRoundsInfo.getVersionId(), projectVersionRoundsInfo.getRound());
         }
         return HttpResult.build(false, "添加测试轮次失败",
-                operationProjectVersionRoundsInfo.queryProjectVersionRoundsByVersionIdAndRoundId(
+                operationProjectVersionRoundsInfo.queryByVersionIdAndRoundId(
                         projectVersionRoundsInfo.getVersionId(), projectVersionRoundsInfo.getRound()));
     }
 
@@ -82,15 +85,33 @@ public class ManageDataServiceImpl implements ManageDataService {
         createTaskRequest.setUuid(uuid);
         ProjectInfo projectInfo = operationProject.queryProjectByName(createTaskRequest.getProject());
         ProjectVersionInfo projectVersionInfo = operationProjectVersion
-                .queryProjectVersionByProjectIdAndVersion(projectInfo.getId(), createTaskRequest.getVersion());
+                .queryByProjectIdAndVersion(projectInfo.getId(), createTaskRequest.getVersion());
         ProjectVersionRoundsInfo projectVersionRoundsInfo = operationProjectVersionRoundsInfo
-                .queryProjectVersionRoundsByVersionIdAndRoundId(projectVersionInfo.getId(),createTaskRequest.getRound());
+                .queryByVersionIdAndRoundId(projectVersionInfo.getId(), createTaskRequest.getRound());
         if (projectVersionRoundsInfo == null) {
             return HttpResult.build(false, "任务创建失败检查项目版本测试轮次");
+        }
+        CoverageReportEntity coverageReportEntity = operationCoverageReportDao.queryByRoundId(projectVersionRoundsInfo.getId());
+        if (coverageReportEntity != null) {
+            return HttpResult.build(false, "任务创建失败，任务已存在", coverageReportEntity);
         }
         createTaskRequest.setRoundId(projectVersionRoundsInfo.getId());
         EnvCoverRequest envCoverRequest = new Gson().fromJson(new Gson().toJson(createTaskRequest), EnvCoverRequest.class);
         codeCovService.triggerEnvCov(envCoverRequest);
         return HttpResult.success();
+    }
+
+    @Override
+    public HttpResult setTestPlanTaskState(TestPlanRequest testPlanRequest) {
+        ProjectInfo projectInfo = operationProject.queryProjectByName(testPlanRequest.getProject());
+        ProjectVersionInfo projectVersionInfo = operationProjectVersion
+                .queryByProjectIdAndVersion(projectInfo.getId(), testPlanRequest.getVersion());
+        ProjectVersionRoundsInfo projectVersionRoundsInfo = operationProjectVersionRoundsInfo
+                .queryByVersionIdAndRoundId(projectVersionInfo.getId(), testPlanRequest.getRound());
+        int re = operationCoverageReportDao.updateByRoundId(projectVersionRoundsInfo.getId(), Constants.JobStatus.TASK_DONE.val());
+        if (re > 0) {
+            return HttpResult.success("任务状态更新成功");
+        }
+        return HttpResult.build(false,"任务状态更新失败");
     }
 }

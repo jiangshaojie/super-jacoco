@@ -52,8 +52,9 @@ public class ManageDataController {
 
     @RequestMapping(value = "/test-plan-state")
     @ResponseBody
-    public HttpResult<Object> setTestPlanState(@RequestBody String param) {
-        return null;
+    public HttpResult<Object> setTestPlanState(@RequestBody TestPlanRequest testPlanRequest) {
+        HttpResult httpResult = manageDataService.setTestPlanTaskState(testPlanRequest);
+        return httpResult;
     }
 
     @RequestMapping(value = "/create-task")

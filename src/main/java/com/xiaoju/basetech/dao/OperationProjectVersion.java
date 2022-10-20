@@ -1,6 +1,5 @@
 package com.xiaoju.basetech.dao;
 
-import com.xiaoju.basetech.entity.ProjectInfo;
 import com.xiaoju.basetech.entity.ProjectVersionInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -25,6 +24,6 @@ public interface OperationProjectVersion {
             @Result(column = "project_id", property = "projectId"),
             @Result(column = "version", property = "version"),
             @Result(column = "create_time", property = "createTime")})
-    ProjectVersionInfo queryProjectVersionByProjectIdAndVersion(int projectId, String version);
+    ProjectVersionInfo queryByProjectIdAndVersion(int projectId, String version);
 
 }

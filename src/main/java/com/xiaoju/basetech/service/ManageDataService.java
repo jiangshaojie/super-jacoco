@@ -9,4 +9,6 @@ public interface ManageDataService {
     HttpResult insertProjectVersionRound(ProjectVersionRoundsInfo projectVersionRoundsInfo);
 
     HttpResult createTask(CreateTaskRequest createTaskRequest);
+
+    HttpResult setTestPlanTaskState(TestPlanRequest testPlanRequest);
 }

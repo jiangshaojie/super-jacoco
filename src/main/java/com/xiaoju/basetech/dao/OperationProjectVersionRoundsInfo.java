@@ -27,7 +27,7 @@ public interface OperationProjectVersionRoundsInfo {
             @Result(column = "version_id", property = "versionId"),
             @Result(column = "round", property = "round"),
             @Result(column = "create_time", property = "createTime")})
-    ProjectVersionRoundsInfo queryProjectVersionRoundsByVersionIdAndRoundId(int versionId, int round);
+    ProjectVersionRoundsInfo queryByVersionIdAndRoundId(int versionId, int round);
 
     @Select("select * from project_version_rounds_info where version_id=#{versionId}")
     @Results({@Result(id = true, column = "id", property = "id"),
