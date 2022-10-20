@@ -95,8 +95,8 @@ public class CodeCoverageScheduleJob {
     public void calculateEnvCov() {
         List<CoverageReportEntity> resList = coverageReportDao.queryCoverByStatus(Constants.JobStatus.SUCCESS.val(),
                 Constants.CoverageFrom.ENV.val(), 10);
-        manualCalculateEnvCov(resList);
         log.info("查询需要拉取exec文件的数据{}条", resList.size());
+        manualCalculateEnvCov(resList);
     }
 
     public void manualCalculateEnvCov(List<CoverageReportEntity> resList) {
