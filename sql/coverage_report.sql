@@ -30,10 +30,10 @@ CREATE TABLE `diff_coverage_report`
 CREATE TABLE `diff_deploy_info`
 (
     `id`              int(10) NOT NULL AUTO_INCREMENT,
-    `job_record_uuid` varchar(80)   NOT NULL COMMENT '请求唯一标识码',
-    `address`         varchar(15)   NOT NULL COMMENT 'HOST',
+    `job_record_uuid` varchar(80)    NOT NULL COMMENT '请求唯一标识码',
+    `address`         varchar(15)    NOT NULL COMMENT 'HOST',
     `port`            int(10) NOT NULL COMMENT '端口',
-    `code_path`       varchar(1000) NOT NULL DEFAULT '' COMMENT 'nowVersion代码目录',
+    `code_path`       varchar(1000)  NOT NULL DEFAULT '' COMMENT 'nowVersion代码目录',
     `child_modules`   varchar(10000) NOT NULL DEFAULT '' COMMENT '项目子模块名称',
     PRIMARY KEY (`job_record_uuid`),
     KEY               `id` (`id`)
@@ -60,7 +60,16 @@ CREATE TABLE `project_version_rounds_info`
 (
     `id`          int(10) NOT NULL AUTO_INCREMENT primary key,
     `version_id`  int(10) NOT NULL COMMENT '版本Id',
-    `round`    int(10) NOT NULL COMMENT '轮次Id',
+    `round`       int(10) NOT NULL COMMENT '轮次Id',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     CONSTRAINT project_version_rounds_info_UN UNIQUE KEY (version_id,round_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='项目版本测试轮次';
+
+CREATE TABLE `coverage_detail_report`
+(
+    `id`                      int(10) NOT NULL AUTO_INCREMENT primary key,
+    `diff_coverage_report_id` int(10) NOT NULL COMMENT 'diff_coverage_report记录',
+    `detail_report`           TEXT      NOT NULL COMMENT '详情报告',
+    `create_time`             timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`             timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='覆盖率报告详情';
