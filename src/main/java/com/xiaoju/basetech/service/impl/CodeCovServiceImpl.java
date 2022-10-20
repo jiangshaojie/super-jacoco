@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.jacoco.core.tools.ExecFileLoader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -392,6 +393,7 @@ public class CodeCovServiceImpl implements CodeCovService {
                                 branchCoverage = (branchDenominator - branchNumerator) / branchDenominator * 100;
                             }
                         }
+                        calculatePackageCalculate(reportFile);
                         // 复制report报告
                         String[] cppCmd = new String[]{"cp -rf " + reportFile.getParent() + " " + REPORT_PATH + coverageReport.getUuid() + "/"};
                         CmdExecutor.executeCmd(cppCmd, CMD_TIMEOUT);
@@ -494,6 +496,33 @@ public class CodeCovServiceImpl implements CodeCovService {
     public int setEnvCov(EnvCovStatusRequest envCoverStatusRequest) {
         int re = coverageReportDao.setCoverStatus(envCoverStatusRequest);
         return re;
+    }
+
+    private void calculatePackageCalculate(File reportFile) {
+        Document doc = null;
+        try {
+            doc = Jsoup.parse(reportFile.getAbsoluteFile(), "UTF-8", "");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Elements elements = doc.getElementById("coveragetable").getElementsByTag("tbody").first().getElementsByTag("tr");
+        double branchCoverage = 100;
+        // 以上这里初始化都换成了1
+        if (doc != null && elements != null) {
+            elements.forEach(o -> {
+                o.getElementsByClass("el_package").first().text();
+            });
+            /*float lineNumerator = Float.valueOf(lineCtr1.get(1).text().replace(",", ""));
+            float lineDenominator = Float.valueOf(lineCtr2.get(3).text().replace(",", ""));
+            lineCoverage = (lineDenominator - lineNumerator) / lineDenominator * 100;
+            String[] branch = bars.get(1).text().split(" of ");
+            float branchNumerator = Float.valueOf(branch[0].replace(",", ""));
+            float branchDenominator = Float.valueOf(branch[1].replace(",", ""));
+            if (branchDenominator > 0.0) {
+                branchCoverage = (branchDenominator - branchNumerator) / branchDenominator * 100;
+            }*/
+        }
+
     }
 
     /**
