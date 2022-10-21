@@ -8,11 +8,11 @@ package com.xiaoju.basetech.util;
  */
 public class Constants {
 
-    public static final String CODE_ROOT = System.getProperty("user.home")+"/app/super_jacoco/clonecode/";
-    public static final String LOG_PATH = System.getProperty("user.home")+"/report/logs/";
-    public static final String REPORT_PATH = System.getProperty("user.home")+"/report/";
+    public static final String CODE_ROOT = System.getProperty("user.home") + "/app/super_jacoco/clonecode/";
+    public static final String LOG_PATH = System.getProperty("user.home") + "/report/logs/";
+    public static final String REPORT_PATH = System.getProperty("user.home") + "/report/";
     public static final String NO_DIFFCODE_REPORT = LocalIpUtils.getTomcatBaseUrl() + "nodiffcode.html";
-    public static final String JACOCO_RESOURE_PATH =System.getProperty("user.home")+ "/resource/jacoco-resources";
+    public static final String JACOCO_RESOURE_PATH = System.getProperty("user.home") + "/resource/jacoco-resources";
 
     public enum JobStatus {
 
@@ -59,9 +59,9 @@ public class Constants {
         REMOVE_FILE_FAIL(211, "删除源文件失败"),
 
         ENVREPORT_FAIL(212, "统计功能测试增量覆盖率失败"),
-        TASK_DONE(300,"本次测试完成，代码覆盖率任务停止统计"),
-        WAITING_PULL_EXEC(12,"等待统计功能测试增量覆盖率中");
-
+        TASK_DONE(300, "本次测试完成，代码覆盖率任务停止统计"),
+        ROUND_VERSION_DONE(301, "本轮测试发新版，适用于测试轮次不变，代码更新的情况，服务需要重启"),
+        WAITING_PULL_EXEC(12, "等待统计功能测试增量覆盖率中");
 
 
         private int value;

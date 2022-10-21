@@ -73,5 +73,6 @@ CREATE TABLE `coverage_detail_report`
     `branchCoverage` varchar(10) COMMENT '分之覆盖率',
     `round_id`       int(10) COMMENT '任务id',
     `create_time`    timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`    timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+    `update_time`    timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    CONSTRAINT name_round_id_UN UNIQUE KEY (name,round_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='覆盖率报告详情';

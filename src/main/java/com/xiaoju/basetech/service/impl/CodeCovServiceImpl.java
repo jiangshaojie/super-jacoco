@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.xiaoju.basetech.dao.CoverageReportDao;
 import com.xiaoju.basetech.dao.DeployInfoDao;
+import com.xiaoju.basetech.dao.OperationCoverageReportDao;
 import com.xiaoju.basetech.entity.*;
 import com.xiaoju.basetech.service.CodeCovService;
 import com.xiaoju.basetech.util.*;
@@ -72,6 +73,8 @@ public class CodeCovServiceImpl implements CodeCovService {
 
     @Autowired
     private ReportParser reportParser;
+    @Autowired
+    OperationCoverageReportDao operationCoverageReportDao;
 
     /**
      * 新增单元覆盖率增量覆盖率任务
@@ -350,8 +353,8 @@ public class CodeCovServiceImpl implements CodeCovService {
         try {
             int exitCode = CmdExecutor.executeCmd(new String[]{"cd " + coverageReport.getNowLocalPath() + " && java -jar " +
                     JACOCO_PATH + " dump --address " + deployInfoEntity.getAddress() + " --port " +
-                    deployInfoEntity.getPort() + " --destfile ./jacoco.exec"}, CMD_TIMEOUT);
-
+                    deployInfoEntity.getPort() + " --destfile ./jacoco_tmp.exec"}, CMD_TIMEOUT);
+            handleJacocoFile(coverageReport);
             if (exitCode == 0) {
                 CmdExecutor.executeCmd(new String[]{"rm -rf " + REPORT_PATH + coverageReport.getUuid()}, CMD_TIMEOUT);
                 String[] moduleList = deployInfoEntity.getChildModules().split(",");
@@ -439,6 +442,7 @@ public class CodeCovServiceImpl implements CodeCovService {
                             CmdExecutor.executeCmd(new String[]{"cp -r " + JACOCO_RESOURE_PATH + " " + REPORT_PATH + coverageReport.getUuid()}, CMD_TIMEOUT);
                             coverageReport.setLineCoverage(Double.valueOf(result[2]));
                             coverageReport.setBranchCoverage(Double.valueOf(result[1]));
+                            calculatePackageCalculate(reportFile, coverageReport.getId());
                             return;
                         } else {
                             coverageReport.setRequestStatus(Constants.JobStatus.ENVREPORT_FAIL.val());
@@ -500,6 +504,34 @@ public class CodeCovServiceImpl implements CodeCovService {
         return re;
     }
 
+    private void handleJacocoFile(CoverageReportEntity coverageReport) throws Exception {
+        List<CoverageReportEntity> coverageReportEntityList = operationCoverageReportDao
+                .queryByRoundIdAndStatus(coverageReport.getRoundId());
+        if (coverageReportEntityList.size() > 0) {
+            CoverageReportEntity coverageReportLast = coverageReportEntityList.get(0);
+            int exitCode = CmdExecutor.executeCmd(new String[]{"cd " + coverageReportLast.getNowLocalPath() +
+                    " && cp jacoco.exec" + coverageReport.getNowLocalPath() + "/jacoco_Last.exec"}, CMD_TIMEOUT);
+            if (exitCode == 0) {
+                log.info("{} 文件从上次任务复制成功", coverageReportLast.getUuid());
+                String jacocoPath = coverageReport.getNowLocalPath() + "/jacoco.exec";
+                List<String> execFiles = new ArrayList<>();
+                execFiles.add(coverageReportLast.getNowLocalPath() + "/jacoco_Last.exec");
+                execFiles.add(coverageReportLast.getNowLocalPath() + "/jacoco_tmp.exec");
+                mergeExec(execFiles, jacocoPath);
+            } else {
+                throw new Exception("jacoco文件合并处理失败" + coverageReport.getUuid());
+            }
+
+        } else {
+            int exitCode = CmdExecutor.executeCmd(new String[]{"cd " + coverageReport.getNowLocalPath() + " && cp jacoco_tmp.exec jacoco.exec"}, CMD_TIMEOUT);
+            if (exitCode == 0) {
+                log.info("{} 文件复制成功", coverageReport.getUuid());
+            } else {
+                throw new Exception("jacoco文件处理失败:" + coverageReport.getUuid());
+            }
+        }
+    }
+
     private void calculatePackageCalculate(File reportFile, int id) {
         Document doc = null;
         try {
@@ -528,15 +560,6 @@ public class CodeCovServiceImpl implements CodeCovService {
                 packageDetailCoverageList.add(packageDetailCoverage);
             });
 
-            /*float lineNumerator = Float.valueOf(lineCtr1.get(1).text().replace(",", ""));
-            float lineDenominator = Float.valueOf(lineCtr2.get(3).text().replace(",", ""));
-            lineCoverage = (lineDenominator - lineNumerator) / lineDenominator * 100;
-            String[] branch = bars.get(1).text().split(" of ");
-            float branchNumerator = Float.valueOf(branch[0].replace(",", ""));
-            float branchDenominator = Float.valueOf(branch[1].replace(",", ""));
-            if (branchDenominator > 0.0) {
-                branchCoverage = (branchDenominator - branchNumerator) / branchDenominator * 100;
-            }*/
         }
 
     }
