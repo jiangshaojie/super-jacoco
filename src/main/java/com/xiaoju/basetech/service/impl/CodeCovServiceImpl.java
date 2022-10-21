@@ -2,6 +2,7 @@ package com.xiaoju.basetech.service.impl;
 
 
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
 import com.xiaoju.basetech.dao.CoverageReportDao;
 import com.xiaoju.basetech.dao.DeployInfoDao;
 import com.xiaoju.basetech.entity.*;
@@ -9,6 +10,7 @@ import com.xiaoju.basetech.service.CodeCovService;
 import com.xiaoju.basetech.util.*;
 import jodd.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.groovy.GJson;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jacoco.core.tools.ExecFileLoader;
 import org.jsoup.Jsoup;
@@ -509,9 +511,20 @@ public class CodeCovServiceImpl implements CodeCovService {
         double branchCoverage = 100;
         // 以上这里初始化都换成了1
         if (doc != null && elements != null) {
+            List<PackageDetailCoverage> packageDetailCoverageList = new ArrayList<>();
             elements.forEach(o -> {
-                o.getElementsByClass("el_package").first().text();
+                PackageDetailCoverage packageDetailCoverage = new PackageDetailCoverage();
+                packageDetailCoverage.setName(o.getElementsByClass("el_package").first().text());
+                packageDetailCoverage.setBranchCoverage(o.getElementsByClass("ctr2").get(1).text());
+                String coverLines = o.getElementsByClass("ctr1").get(1).text();
+                String lines = o.getElementsByClass("ctr2").get(3).text();
+                Double coverLinesD = new Double(coverLines);
+                Double linesD = new Double(lines);
+                Double coverLine = coverLinesD / linesD;
+                packageDetailCoverage.setLineCoverage(coverLine.toString());
+                packageDetailCoverageList.add(packageDetailCoverage);
             });
+
             /*float lineNumerator = Float.valueOf(lineCtr1.get(1).text().replace(",", ""));
             float lineDenominator = Float.valueOf(lineCtr2.get(3).text().replace(",", ""));
             lineCoverage = (lineDenominator - lineNumerator) / lineDenominator * 100;

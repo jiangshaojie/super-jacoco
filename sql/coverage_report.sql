@@ -67,9 +67,11 @@ CREATE TABLE `project_version_rounds_info`
 
 CREATE TABLE `coverage_detail_report`
 (
-    `id`                      int(10) NOT NULL AUTO_INCREMENT primary key,
-    `diff_coverage_report_id` int(10) NOT NULL COMMENT 'diff_coverage_report记录',
-    `detail_report`           TEXT      NOT NULL COMMENT '详情报告',
-    `create_time`             timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`             timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+    `id`             int(10) NOT NULL AUTO_INCREMENT primary key,
+    `name`           varchar(100) NOT NULL COMMENT '包名',
+    `lineCoverage`   varchar(10)  NOT NULL COMMENT '行覆盖率',
+    `branchCoverage` varchar(10) COMMENT '分之覆盖率',
+    `round_id`       int(10) COMMENT '任务id',
+    `create_time`    timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`    timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='覆盖率报告详情';
