@@ -395,7 +395,7 @@ public class CodeCovServiceImpl implements CodeCovService {
                                 branchCoverage = (branchDenominator - branchNumerator) / branchDenominator * 100;
                             }
                         }
-                        calculatePackageCalculate(reportFile);
+                        calculatePackageCalculate(reportFile, coverageReport.getId());
                         // 复制report报告
                         String[] cppCmd = new String[]{"cp -rf " + reportFile.getParent() + " " + REPORT_PATH + coverageReport.getUuid() + "/"};
                         CmdExecutor.executeCmd(cppCmd, CMD_TIMEOUT);
@@ -500,7 +500,7 @@ public class CodeCovServiceImpl implements CodeCovService {
         return re;
     }
 
-    private void calculatePackageCalculate(File reportFile) {
+    private void calculatePackageCalculate(File reportFile, int id) {
         Document doc = null;
         try {
             doc = Jsoup.parse(reportFile.getAbsoluteFile(), "UTF-8", "");
@@ -521,7 +521,10 @@ public class CodeCovServiceImpl implements CodeCovService {
                 Double coverLinesD = new Double(coverLines);
                 Double linesD = new Double(lines);
                 Double coverLine = coverLinesD / linesD;
+                packageDetailCoverage.setDiffCoverageReportId(id);
                 packageDetailCoverage.setLineCoverage(coverLine.toString());
+                packageDetailCoverage.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                packageDetailCoverage.setUpdateTime(new Timestamp(System.currentTimeMillis()));
                 packageDetailCoverageList.add(packageDetailCoverage);
             });
 
