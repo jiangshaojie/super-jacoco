@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.xiaoju.basetech.dao.CoverageReportDao;
 import com.xiaoju.basetech.dao.DeployInfoDao;
 import com.xiaoju.basetech.dao.OperationCoverageReportDao;
+import com.xiaoju.basetech.dao.OperationPackageDetailCoverage;
 import com.xiaoju.basetech.entity.*;
 import com.xiaoju.basetech.service.CodeCovService;
 import com.xiaoju.basetech.util.*;
@@ -75,7 +76,8 @@ public class CodeCovServiceImpl implements CodeCovService {
     private ReportParser reportParser;
     @Autowired
     OperationCoverageReportDao operationCoverageReportDao;
-
+    @Autowired
+    OperationPackageDetailCoverage operationPackageDetailCoverage;
     /**
      * 新增单元覆盖率增量覆盖率任务
      *
@@ -559,7 +561,7 @@ public class CodeCovServiceImpl implements CodeCovService {
                 packageDetailCoverage.setUpdateTime(new Timestamp(System.currentTimeMillis()));
                 packageDetailCoverageList.add(packageDetailCoverage);
             });
-
+            operationPackageDetailCoverage.insertPackageDetailCoverage(packageDetailCoverageList);
         }
 
     }
