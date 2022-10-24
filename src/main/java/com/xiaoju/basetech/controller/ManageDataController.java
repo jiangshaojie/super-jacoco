@@ -57,6 +57,13 @@ public class ManageDataController {
         return httpResult;
     }
 
+    @RequestMapping(value = "/test-plan-pasue")
+    @ResponseBody
+    public HttpResult<Object> setTestPlanPause(@RequestBody TestPlanRequest testPlanRequest) {
+        HttpResult httpResult = manageDataService.setTestPlanPause(testPlanRequest);
+        return httpResult;
+    }
+
     @RequestMapping(value = "/create-task")
     @ResponseBody
     public HttpResult<Object> createTask(@RequestBody CreateTaskRequest createTaskRequest) {

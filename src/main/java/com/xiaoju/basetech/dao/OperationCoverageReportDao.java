@@ -38,7 +38,7 @@ public interface OperationCoverageReportDao {
     )
     CoverageReportEntity queryByRoundId(int roundId);
 
-    @Update("update diff_coverage_report set request_status=#{status} where round_id=#{roundId} and 0<request_status<200")
+    @Update("update diff_coverage_report set request_status=#{status} where round_id=#{roundId} and request_status=200")
     int updateByRoundId(int roundId, int status);
 
     @Select("select * from diff_coverage_report where round_id=#{roundId} and request_status=301 order by id desc)")

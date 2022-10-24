@@ -11,4 +11,6 @@ public interface ManageDataService {
     HttpResult createTask(CreateTaskRequest createTaskRequest);
 
     HttpResult setTestPlanTaskState(TestPlanRequest testPlanRequest);
+
+    HttpResult setTestPlanPause(TestPlanRequest testPlanRequest);
 }

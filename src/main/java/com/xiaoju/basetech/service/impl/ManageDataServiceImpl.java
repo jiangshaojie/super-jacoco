@@ -126,4 +126,22 @@ public class ManageDataServiceImpl implements ManageDataService {
         }
         return HttpResult.build(false, "任务状态更新失败");
     }
+
+    @Override
+    public HttpResult setTestPlanPause(TestPlanRequest testPlanRequest) {
+        ProjectInfo projectInfo = operationProject.queryProjectByName(testPlanRequest.getProject());
+        ProjectVersionInfo projectVersionInfo = operationProjectVersion
+                .queryByProjectIdAndVersion(projectInfo.getId(), testPlanRequest.getVersion());
+        ProjectVersionRoundsInfo projectVersionRoundsInfo = operationProjectVersionRoundsInfo
+                .queryByVersionIdAndRoundId(projectVersionInfo.getId(), testPlanRequest.getRound());
+        CoverageReportEntity coverageReportEntity = operationCoverageReportDao.queryByRoundId(projectVersionRoundsInfo.getId());
+        List<CoverageReportEntity> coverageReportEntityList = new ArrayList<>();
+        coverageReportEntityList.add(coverageReportEntity);
+        codeCoverageScheduleJob.manualCalculateEnvCov(coverageReportEntityList);
+        int re = operationCoverageReportDao.updateByRoundId(projectVersionRoundsInfo.getId(), Constants.JobStatus.ROUND_VERSION_DONE.val());
+        if (re > 0) {
+            return HttpResult.success("任务状态更新成功");
+        }
+        return HttpResult.build(false, "任务状态更新失败");
+    }
 }
