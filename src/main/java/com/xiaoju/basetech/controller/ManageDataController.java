@@ -61,7 +61,7 @@ public class ManageDataController {
         return httpResult;
     }
 
-    @RequestMapping(value = "/test-plan-pasue")
+    @RequestMapping(value = "/test-plan-pause")
     @ResponseBody
     public HttpResult<Object> setTestPlanPause(@RequestBody TestPlanRequest testPlanRequest) {
         HttpResult httpResult = manageDataService.setTestPlanPause(testPlanRequest);

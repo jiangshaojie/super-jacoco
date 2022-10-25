@@ -19,7 +19,7 @@
         VALUES
         <foreach collection="packageDetailCoverageList" item="packageDetailCoverage" separator=",">
             (#{packageDetailCoverage.name}, #{packageDetailCoverage.lineCoverage},
-            #{packageDetailCoverage.branchCoverage},#{packageDetailCoverage.diffCoverageReportId},
+            #{packageDetailCoverage.branchCoverage},#{packageDetailCoverage.roundId},
             #{packageDetailCoverage.createTime},#{packageDetailCoverage.updateTime})
         </foreach>
         on duplicate key update

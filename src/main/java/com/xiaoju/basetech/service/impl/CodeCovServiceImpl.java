@@ -518,13 +518,13 @@ public class CodeCovServiceImpl implements CodeCovService {
         if (coverageReportEntityList.size() > 0) {
             CoverageReportEntity coverageReportLast = coverageReportEntityList.get(0);
             int exitCode = CmdExecutor.executeCmd(new String[]{"cd " + coverageReportLast.getNowLocalPath() +
-                    " && cp jacoco.exec" + coverageReport.getNowLocalPath() + "/jacoco_Last.exec"}, CMD_TIMEOUT);
+                    " && cp jacoco.exec " + coverageReport.getNowLocalPath() + "/jacoco_last.exec"}, CMD_TIMEOUT);
             if (exitCode == 0) {
                 log.info("{} 文件从上次任务复制成功", coverageReportLast.getUuid());
                 String jacocoPath = coverageReport.getNowLocalPath() + "/jacoco.exec";
                 List<String> execFiles = new ArrayList<>();
-                execFiles.add(coverageReportLast.getNowLocalPath() + "/jacoco_Last.exec");
-                execFiles.add(coverageReportLast.getNowLocalPath() + "/jacoco_tmp.exec");
+                execFiles.add(coverageReport.getNowLocalPath() + "/jacoco_last.exec");
+                execFiles.add(coverageReport.getNowLocalPath() + "/jacoco_tmp.exec");
                 mergeExec(execFiles, jacocoPath);
             } else {
                 throw new Exception("jacoco文件合并处理失败" + coverageReport.getUuid());

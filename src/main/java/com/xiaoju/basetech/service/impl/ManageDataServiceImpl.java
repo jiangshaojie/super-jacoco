@@ -100,7 +100,8 @@ public class ManageDataServiceImpl implements ManageDataService {
         if (coverageReportEntity != null && coverageReportEntity.getRequestStatus() == 300 && createTaskRequest.getFlag() == false) {
             return HttpResult.build(false, "任务创建失败，任务已完成", coverageReportEntity);
         }
-        if (coverageReportEntity != null && coverageReportEntity.getRequestStatus() != 300) {
+        if (coverageReportEntity != null && coverageReportEntity.getRequestStatus() != 300 &&
+                coverageReportEntity.getRequestStatus() != 301) {
             return HttpResult.build(false, "任务创建失败，任务已存在", coverageReportEntity);
         }
         createTaskRequest.setRoundId(projectVersionRoundsInfo.getId());
