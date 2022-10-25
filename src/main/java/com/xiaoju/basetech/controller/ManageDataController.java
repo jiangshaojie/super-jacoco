@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.xiaoju.basetech.entity.*;
+import com.xiaoju.basetech.job.CodeCoverageScheduleJob;
 import com.xiaoju.basetech.service.ManageDataService;
+import com.xiaoju.basetech.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class ManageDataController {
     @Autowired
     ManageDataService manageDataService;
+    @Autowired
+    CodeCoverageScheduleJob codeCoverageScheduleJob;
 
     @RequestMapping(value = "/insertProject")
     @ResponseBody
@@ -69,5 +73,12 @@ public class ManageDataController {
     public HttpResult<Object> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
         HttpResult httpResult = manageDataService.createTask(createTaskRequest);
         return httpResult;
+    }
+
+    @RequestMapping(value = "/manual-trigger-task")
+    @ResponseBody
+    public HttpResult<Object> triggerTask(@RequestBody CreateTaskRequest createTaskRequest) {
+        codeCoverageScheduleJob.calculateEnvCov();
+        return HttpResult.success();
     }
 }

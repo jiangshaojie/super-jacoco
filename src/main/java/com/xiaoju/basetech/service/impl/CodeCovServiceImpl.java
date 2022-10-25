@@ -2,35 +2,30 @@ package com.xiaoju.basetech.service.impl;
 
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
 import com.xiaoju.basetech.dao.CoverageReportDao;
 import com.xiaoju.basetech.dao.DeployInfoDao;
 import com.xiaoju.basetech.dao.OperationCoverageReportDao;
-import com.xiaoju.basetech.dao.OperationPackageDetailCoverage;
+import com.xiaoju.basetech.dao.PackageDetailCoverageDao;
 import com.xiaoju.basetech.entity.*;
 import com.xiaoju.basetech.service.CodeCovService;
 import com.xiaoju.basetech.util.*;
 import jodd.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.groovy.GJson;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jacoco.core.tools.ExecFileLoader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.xiaoju.basetech.util.Constants.*;
@@ -77,7 +72,8 @@ public class CodeCovServiceImpl implements CodeCovService {
     @Autowired
     OperationCoverageReportDao operationCoverageReportDao;
     @Autowired
-    OperationPackageDetailCoverage operationPackageDetailCoverage;
+    PackageDetailCoverageDao packageDetailCoverageDao;
+
     /**
      * 新增单元覆盖率增量覆盖率任务
      *
@@ -246,6 +242,7 @@ public class CodeCovServiceImpl implements CodeCovService {
     public void cloneAndCompileCode(CoverageReportEntity coverageReport) {
         // 下载代码
         coverageReport.setRequestStatus(Constants.JobStatus.CLONING.val());
+        coverageReport.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         coverageReportDao.updateCoverageReportByReport(coverageReport);
         codeCloneExecutor.cloneCode(coverageReport);
         // 更新状态
@@ -295,6 +292,7 @@ public class CodeCovServiceImpl implements CodeCovService {
             coverageReport.setNowVersion(envCoverRequest.getNowVersion());
             coverageReport.setType(envCoverRequest.getType());
             coverageReport.setRoundId(envCoverRequest.getRoundId());
+//            coverageReport.setId(envCoverRequest);
 
             if (!StringUtils.isEmpty(envCoverRequest.getBaseVersion())) {
                 coverageReport.setBaseVersion(envCoverRequest.getBaseVersion());
@@ -400,7 +398,6 @@ public class CodeCovServiceImpl implements CodeCovService {
                                 branchCoverage = (branchDenominator - branchNumerator) / branchDenominator * 100;
                             }
                         }
-                        calculatePackageCalculate(reportFile, coverageReport.getId());
                         // 复制report报告
                         String[] cppCmd = new String[]{"cp -rf " + reportFile.getParent() + " " + REPORT_PATH + coverageReport.getUuid() + "/"};
                         CmdExecutor.executeCmd(cppCmd, CMD_TIMEOUT);
@@ -408,11 +405,15 @@ public class CodeCovServiceImpl implements CodeCovService {
                         coverageReport.setRequestStatus(Constants.JobStatus.SUCCESS.val());
                         coverageReport.setLineCoverage(lineCoverage);
                         coverageReport.setBranchCoverage(branchCoverage);
+                        if (reportFile.exists()) {
+                            log.info("报告存在，解析包覆盖率");
+                            calculatePackageCalculate(reportFile, coverageReport.getRoundId());
+                        }
                         return;
                     } catch (Exception e) {
                         coverageReport.setRequestStatus(Constants.JobStatus.ENVREPORT_FAIL.val());
                         coverageReport.setErrMsg("解析jacoco报告失败");
-                        log.error("uuid={}", coverageReport.getUuid(), e.getMessage());
+                        log.info("uuid={}  {}", coverageReport.getUuid(), e.getStackTrace());
                     }
                 } else {
                     coverageReport.setRequestStatus(Constants.JobStatus.ENVREPORT_FAIL.val());
@@ -445,6 +446,10 @@ public class CodeCovServiceImpl implements CodeCovService {
                             coverageReport.setLineCoverage(Double.valueOf(result[2]));
                             coverageReport.setBranchCoverage(Double.valueOf(result[1]));
                             calculatePackageCalculate(reportFile, coverageReport.getId());
+                            if (reportFile.exists()) {
+                                log.info("报告存在，解析包覆盖率");
+                                calculatePackageCalculate(reportFile, coverageReport.getRoundId());
+                            }
                             return;
                         } else {
                             coverageReport.setRequestStatus(Constants.JobStatus.ENVREPORT_FAIL.val());
@@ -469,6 +474,7 @@ public class CodeCovServiceImpl implements CodeCovService {
             coverageReport.setErrMsg("获取jacoco.exec 文件发生未知错误");
             log.error("uuid={}获取jacoco.exec 文件发生未知错误", coverageReport.getUuid(), e);
             log.error("uuid={}", coverageReport.getUuid(), coverageReport.getErrMsg());
+            log.error("uuid={}", coverageReport.getUuid(), e.getStackTrace());
         } finally {
             coverageReport.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             coverageReportDao.updateCoverageReportByReport(coverageReport);
@@ -543,27 +549,33 @@ public class CodeCovServiceImpl implements CodeCovService {
         }
         Elements elements = doc.getElementById("coveragetable").getElementsByTag("tbody").first().getElementsByTag("tr");
         double branchCoverage = 100;
-        // 以上这里初始化都换成了1
-        if (doc != null && elements != null) {
-            List<PackageDetailCoverage> packageDetailCoverageList = new ArrayList<>();
-            elements.forEach(o -> {
-                PackageDetailCoverage packageDetailCoverage = new PackageDetailCoverage();
-                packageDetailCoverage.setName(o.getElementsByClass("el_package").first().text());
-                packageDetailCoverage.setBranchCoverage(o.getElementsByClass("ctr2").get(1).text());
-                String coverLines = o.getElementsByClass("ctr1").get(1).text();
-                String lines = o.getElementsByClass("ctr2").get(3).text();
-                Double coverLinesD = new Double(coverLines);
-                Double linesD = new Double(lines);
-                Double coverLine = coverLinesD / linesD;
-                packageDetailCoverage.setDiffCoverageReportId(id);
-                packageDetailCoverage.setLineCoverage(coverLine.toString());
-                packageDetailCoverage.setCreateTime(new Timestamp(System.currentTimeMillis()));
-                packageDetailCoverage.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                packageDetailCoverageList.add(packageDetailCoverage);
-            });
-            operationPackageDetailCoverage.insertPackageDetailCoverage(packageDetailCoverageList);
+        try {
+            // 以上这里初始化都换成了1
+            if (doc != null && elements != null) {
+                List<PackageDetailCoverage> packageDetailCoverageList = new ArrayList<>();
+                DecimalFormat format = new DecimalFormat("#.00");
+                elements.forEach(o -> {
+                    PackageDetailCoverage packageDetailCoverage = new PackageDetailCoverage();
+                    packageDetailCoverage.setName(o.getElementsByClass("el_package").first().text());
+                    packageDetailCoverage.setBranchCoverage(o.getElementsByClass("ctr2").get(1).text());
+                    String missCoverLines = o.getElementsByClass("ctr1").get(1).text().replace(",", "");
+                    String lines = o.getElementsByClass("ctr2").get(3).text().replace(",", "");
+                    Double missLinesD = new Double(missCoverLines);
+                    Double linesD = new Double(lines);
+                    Double coverLine = (linesD - missLinesD) / linesD;
+                    String coverLineStr = format.format(coverLine);
+//                    packageDetailCoverage.setDiffCoverageReportId(id);
+                    packageDetailCoverage.setRoundId(id);
+                    packageDetailCoverage.setLineCoverage(coverLineStr);
+                    packageDetailCoverage.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                    packageDetailCoverage.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                    packageDetailCoverageList.add(packageDetailCoverage);
+                });
+                packageDetailCoverageDao.insertPackageDetailCoverage(packageDetailCoverageList);
+            }
+        } catch (Exception e) {
+            log.info("calculatePackageCalculate err: {}", e.fillInStackTrace());
         }
-
     }
 
     /**

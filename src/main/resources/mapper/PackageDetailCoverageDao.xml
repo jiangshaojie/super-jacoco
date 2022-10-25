@@ -1,0 +1,29 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoju.basetech.dao.PackageDetailCoverageDao">
+    <resultMap id="coverageReportEntity" type="com.xiaoju.basetech.entity.PackageDetailCoverage">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="line_coverage" property="lineCoverage"/>
+        <result column="branch_coverage" property="branchCoverage"/>
+        <result column="diff_coverage_report_id" property="diffCoverageReportId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="round_id" property="roundId"/>
+
+    </resultMap>
+
+    <insert id="insertPackageDetailCoverage" parameterType="collection">
+        INSERT INTO coverage_detail_report
+        (`name`, `line_coverage`, `branch_coverage`,`round_id`,`create_time`,`update_time`)
+        VALUES
+        <foreach collection="packageDetailCoverageList" item="packageDetailCoverage" separator=",">
+            (#{packageDetailCoverage.name}, #{packageDetailCoverage.lineCoverage},
+            #{packageDetailCoverage.branchCoverage},#{packageDetailCoverage.diffCoverageReportId},
+            #{packageDetailCoverage.createTime},#{packageDetailCoverage.updateTime})
+        </foreach>
+        on duplicate key update
+        line_coverage=values(line_coverage),branch_coverage=values(branch_coverage),update_time=values(update_time)
+    </insert>
+
+</mapper>

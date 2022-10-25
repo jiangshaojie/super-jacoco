@@ -21,6 +21,7 @@
         <result column="update_time" property="updateTime"/>
         <result column="from" property="from"/>
         <result column="log_file" property="logFile"/>
+        <result column="round_id" property="roundId"/>
 
     </resultMap>
 

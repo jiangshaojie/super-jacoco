@@ -41,7 +41,7 @@ public interface OperationCoverageReportDao {
     @Update("update diff_coverage_report set request_status=#{status} where round_id=#{roundId} and request_status=200")
     int updateByRoundId(int roundId, int status);
 
-    @Select("select * from diff_coverage_report where round_id=#{roundId} and request_status=301 order by id desc)")
+    @Select("select * from diff_coverage_report where round_id=#{roundId} and request_status=301 order by id desc")
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(column = "job_record_uuid", property = "uuid"),
             @Result(column = "giturl", property = "gitUrl"),
