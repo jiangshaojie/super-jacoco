@@ -553,7 +553,7 @@ public class CodeCovServiceImpl implements CodeCovService {
             // 以上这里初始化都换成了1
             if (doc != null && elements != null) {
                 List<PackageDetailCoverage> packageDetailCoverageList = new ArrayList<>();
-                DecimalFormat format = new DecimalFormat("#.00");
+                DecimalFormat format = new DecimalFormat("#.0000");
                 elements.forEach(o -> {
                     PackageDetailCoverage packageDetailCoverage = new PackageDetailCoverage();
                     packageDetailCoverage.setName(o.getElementsByClass("el_package").first().text());
