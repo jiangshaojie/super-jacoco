@@ -37,6 +37,7 @@ public interface CoverageReportDao {
     int casUpdateByStatus(@Param("expectStatus") int expectStatus, @Param("newStatus") int newStatus, @Param("uuid") String uuid);
 
     int setCoverStatus(@Param("envCovStatusRequest") EnvCovStatusRequest envCovStatusRequest);
+
     /**
      * 重置上次更新时间在expireTime之前的未执行完的任务，设置任务状态为待执行
      *
@@ -54,4 +55,6 @@ public interface CoverageReportDao {
      * @return int
      */
     int casUpdateStatusById(Integer id, Integer requestStatus, Integer expectedStatus);
+
+    CoverageReportEntity queryCoverageReportByRoundId(@Param("roundId") int id);
 }

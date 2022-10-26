@@ -30,6 +30,12 @@
         FROM diff_coverage_report
         WHERE `job_record_uuid` = #{uuid} limit 1
     </select>
+    <select id="queryCoverageReportByRoundId" parameterType="java.lang.Integer" resultMap="coverageReportEntity">
+        SELECT *
+        FROM diff_coverage_report
+        WHERE `round_id` = #{roundId}
+        order by update_time desc limit 1
+    </select>
 
     <select id="queryCoverByStatus" parameterType="java.lang.Integer" resultMap="coverageReportEntity">
         SELECT * from diff_coverage_report
@@ -44,8 +50,9 @@
         limit #{num}
     </select>
     <update id="setCoverStatus" parameterType="com.xiaoju.basetech.entity.EnvCovStatusRequest">
-        update diff_coverage_report SET request_status=#{envCovStatusRequest.status}
-        where job_record_uuid=#{envCovStatusRequest.uuid}
+        update diff_coverage_report
+        SET request_status=#{envCovStatusRequest.status}
+        where job_record_uuid = #{envCovStatusRequest.uuid}
     </update>
 
     <insert id="insertCoverageReportById" parameterType="com.xiaoju.basetech.entity.CoverageReportEntity">

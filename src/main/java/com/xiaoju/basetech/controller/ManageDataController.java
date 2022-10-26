@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.xiaoju.basetech.entity.*;
 import com.xiaoju.basetech.job.CodeCoverageScheduleJob;
+import com.xiaoju.basetech.service.CodeCovService;
 import com.xiaoju.basetech.service.ManageDataService;
 import com.xiaoju.basetech.util.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,8 @@ public class ManageDataController {
     ManageDataService manageDataService;
     @Autowired
     CodeCoverageScheduleJob codeCoverageScheduleJob;
+    @Autowired
+    CodeCovService codeCovService;
 
     @RequestMapping(value = "/insertProject")
     @ResponseBody
@@ -80,5 +83,16 @@ public class ManageDataController {
     public HttpResult<Object> triggerTask(@RequestBody CreateTaskRequest createTaskRequest) {
         codeCoverageScheduleJob.calculateEnvCov();
         return HttpResult.success();
+    }
+
+    @RequestMapping(value = "/getEnvCoverResult")
+    @ResponseBody
+    public HttpResult<Object> getEnvCoverResult(@RequestBody TestPlanRequest testPlanRequest) {
+        CoverageReportEntity coverageReport = manageDataService.getEnvCoverResult(testPlanRequest);
+        String uuid = coverageReport.getUuid();
+        if (uuid == null) {
+            return HttpResult.build(false, "任务不存在，请检查请求信息");
+        }
+        return HttpResult.success(codeCovService.getCoverResult(uuid));
     }
 }

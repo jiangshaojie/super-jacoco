@@ -1,10 +1,7 @@
 package com.xiaoju.basetech.service.impl;
 
 import com.google.gson.Gson;
-import com.xiaoju.basetech.dao.OperationCoverageReportDao;
-import com.xiaoju.basetech.dao.OperationProject;
-import com.xiaoju.basetech.dao.OperationProjectVersion;
-import com.xiaoju.basetech.dao.OperationProjectVersionRoundsInfo;
+import com.xiaoju.basetech.dao.*;
 import com.xiaoju.basetech.entity.*;
 import com.xiaoju.basetech.job.CodeCoverageScheduleJob;
 import com.xiaoju.basetech.service.CodeCovService;
@@ -34,6 +31,8 @@ public class ManageDataServiceImpl implements ManageDataService {
     OperationCoverageReportDao operationCoverageReportDao;
     @Autowired
     CodeCoverageScheduleJob codeCoverageScheduleJob;
+    @Autowired
+    CoverageReportDao coverageReportDao;
 
     @Override
     public HttpResult<Object> insertProject(ProjectInfo projectInfo) {
@@ -144,5 +143,23 @@ public class ManageDataServiceImpl implements ManageDataService {
             return HttpResult.success("任务状态更新成功");
         }
         return HttpResult.build(false, "任务状态更新失败");
+    }
+
+    @Override
+    public CoverageReportEntity getEnvCoverResult(TestPlanRequest testPlanRequest) {
+        ProjectInfo projectInfo = operationProject.queryProjectByName(testPlanRequest.getProject());
+        if (projectInfo == null) {
+            return new CoverageReportEntity();
+        }
+        ProjectVersionInfo projectVersionInfo = operationProjectVersion.queryByProjectIdAndVersion(projectInfo.getId(), testPlanRequest.getVersion());
+        if (projectVersionInfo == null) {
+            return new CoverageReportEntity();
+        }
+        ProjectVersionRoundsInfo projectVersionRoundsInfo = operationProjectVersionRoundsInfo.queryByVersionIdAndRoundId(projectVersionInfo.getId(), testPlanRequest.getRound());
+        if (projectVersionRoundsInfo == null) {
+            return new CoverageReportEntity();
+        }
+        CoverageReportEntity coverageReportEntity = coverageReportDao.queryCoverageReportByRoundId(projectVersionRoundsInfo.getId());
+        return coverageReportEntity;
     }
 }

@@ -13,4 +13,6 @@ public interface ManageDataService {
     HttpResult setTestPlanTaskState(TestPlanRequest testPlanRequest);
 
     HttpResult setTestPlanPause(TestPlanRequest testPlanRequest);
+
+    CoverageReportEntity getEnvCoverResult(TestPlanRequest testPlanRequest);
 }
