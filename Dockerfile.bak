@@ -1,6 +1,6 @@
 
 #基础镜像
-FROM java:8
+FROM openjdk:11
 WORKDIR /opt/his
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 RUN echo 'Asia/Shanghai' >/etc/timezone
